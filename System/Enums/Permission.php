@@ -5,7 +5,7 @@ namespace System\Enums {
      *
      * @package System\Enums
      */
-    class PermissionEnum extends Enum {
+    class Permission extends Enum {
 
     }
 }

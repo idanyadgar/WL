@@ -6,7 +6,7 @@ namespace System\Traits {
      *
      * @package System\Traits
      */
-    trait SingletonTrait {
+    trait Singleton {
         /**
          * @var self The instance of the class.
          */

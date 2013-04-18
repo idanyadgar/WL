@@ -5,7 +5,7 @@ namespace System\Enums {
      *
      * @package System\Enums
      */
-    class GenderEnum extends Enum {
+    class Gender extends Enum {
         const Male   = 'male';
         const Female = 'female';
     }

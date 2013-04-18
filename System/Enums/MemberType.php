@@ -5,7 +5,7 @@ namespace System\Enums {
      *
      * @package System\Enums
      */
-    class MemberTypeEnum extends Enum {
+    class MemberType extends Enum {
         const Admin    = 'admin';
         const Standard = 'standard';
         const Banned   = 'banned';

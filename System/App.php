@@ -5,8 +5,8 @@ namespace System {
     use System\DB\DB;
     use System\Exceptions\BadRequestException;
     use System\Exceptions\NotFoundException;
-    use System\Traits\PropertiesTrait;
-    use System\Traits\SingletonTrait;
+    use System\Traits\Properties;
+    use System\Traits\Singleton;
 
     /**
      * Represents the application.
@@ -20,8 +20,8 @@ namespace System {
      * @property-read Controller $controller The currently active controller.
      */
     class App {
-        use SingletonTrait;
-        use PropertiesTrait;
+        use Singleton;
+        use Properties;
 
         /**
          * @var array The configuration array of the application.

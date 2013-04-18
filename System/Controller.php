@@ -1,7 +1,7 @@
 <?php
 namespace System {
     use ArrayObject;
-    use System\Traits\PropertiesTrait;
+    use System\Traits\Properties;
     use stdClass;
 
     /**
@@ -18,7 +18,7 @@ namespace System {
      * @property-read stdClass $viewBag     The variables which are available in the view (protected).
      */
     abstract class Controller {
-        use PropertiesTrait;
+        use Properties;
 
         /**
          * @var string The &lt;title&gt; of the page.

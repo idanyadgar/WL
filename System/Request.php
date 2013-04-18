@@ -2,8 +2,8 @@
 namespace System {
     use ArrayObject;
     use DateTime;
-    use System\Enums\RequestMethodEnum;
-    use System\Traits\PropertiesTrait;
+    use System\Enums\RequestMethod;
+    use System\Traits\Properties;
 
     /**
      * Represents a request which was sent to the server.
@@ -13,7 +13,7 @@ namespace System {
      * @property string                    $ip          The internet protocol from which the request was sent.
      * @property string                    $userAgent   The user-agent of the request.
      * @property string                    $protocol    The protocol of the request.
-     * @property RequestMethodEnum         $method      The method of the request.
+     * @property RequestMethod             $method      The method of the request.
      * @property string                    $queryString The query string of the request.
      * @property string                    $uri         The URI of the request.
      * @property DateTime                  $time        The time of the request.
@@ -21,7 +21,7 @@ namespace System {
      * @property-read ArrayObject          $session     The cookies sent in the request.
      */
     class Request {
-        use PropertiesTrait;
+        use Properties;
 
         /**
          * @var string The internet protocol from which the request was sent.
@@ -36,7 +36,7 @@ namespace System {
          */
         private $_protocol;
         /**
-         * @var RequestMethodEnum Request method.
+         * @var RequestMethod Request method.
          */
         private $_method;
         /**
@@ -68,7 +68,7 @@ namespace System {
                 $this->ip          = $_SERVER['REMOTE_ADDR'];
                 $this->userAgent   = $_SERVER['HTTP_USER_AGENT'];
                 $this->protocol    = $_SERVER['SERVER_PROTOCOL'];
-                $this->method      = RequestMethodEnum::getFromString($_SERVER['REQUEST_METHOD']);
+                $this->method      = RequestMethod::getFromString($_SERVER['REQUEST_METHOD']);
                 $this->queryString = $_SERVER['QUERY_STRING'];
                 $this->uri         = $_SERVER['REQUEST_URI'];
                 $this->time        = new DateTime('@'.$_SERVER['REQUEST_TIME']);
@@ -134,7 +134,7 @@ namespace System {
         /**
          * Returns The method of the request.
          *
-         * @return RequestMethodEnum The method of the request.
+         * @return RequestMethod The method of the request.
          */
         public function getMethod() {
             return $this->_method;
@@ -143,9 +143,9 @@ namespace System {
         /**
          * Sets the request of the method.
          *
-         * @param RequestMethodEnum $method The method of the request.
+         * @param RequestMethod $method The method of the request.
          */
-        public function setMethod(RequestMethodEnum $method) {
+        public function setMethod(RequestMethod $method) {
             $this->_method = $method;
         }
 

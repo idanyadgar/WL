@@ -5,7 +5,7 @@ namespace System\Enums {
      *
      * @package System\Enums
      */
-    class RequestMethodEnum extends Enum {
+    class RequestMethod extends Enum {
         const POST   = 'post';
         const GET    = 'get';
         const PUT    = 'put';

@@ -8,7 +8,7 @@ namespace System\Traits {
      *
      * @package System\Traits
      */
-    trait PropertiesTrait {
+    trait Properties {
         /**
          * Gets a value of a property.
          *

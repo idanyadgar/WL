@@ -1,7 +1,7 @@
 <?php
 namespace System {
     use ReflectionProperty;
-    use System\Traits\PropertiesTrait;
+    use System\Traits\Properties;
 
     /**
      * The base model class which is inherited by every model in the project.
@@ -11,7 +11,7 @@ namespace System {
      * @property-read string[] $errors The array which contains the validation errors.
      */
     abstract class Model {
-        use PropertiesTrait;
+        use Properties;
 
         /**
          * @var string[] The array which contains the validation errors.

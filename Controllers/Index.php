@@ -9,7 +9,7 @@ namespace Controllers {
      *
      * @package Controllers
      */
-    class IndexController extends Controller {
+    class Index extends Controller {
         /**
          * The Index action.<br />
          * URL: /Index/Index

@@ -3,7 +3,7 @@ namespace System\DB {
     use PDO;
     use PDOException;
     use System\Exceptions\DBConnectionException;
-    use System\Traits\PropertiesTrait;
+    use System\Traits\Properties;
 
     /**
      * Represents a connection to the database.
@@ -11,7 +11,7 @@ namespace System\DB {
      * @package System\DB
      */
     class DB extends PDO {
-        use PropertiesTrait;
+        use Properties;
 
         /**
          * Creates the connection with the database.
