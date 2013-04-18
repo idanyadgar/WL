@@ -1,0 +1,13 @@
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+
+	RewriteRule ^favicon\.ico$ static/images/favicon.png [L,NC,QSA]
+
+	RewriteCond %{REQUEST_FILENAME} -f [OR]
+	RewriteCond %{REQUEST_FILENAME} -d
+	RewriteRule .* - [L,QSA]
+
+	RewriteRule ^(?U)users/([^/]+)/*$ users/showProfile/$1 [L,NC,QSA]
+	RewriteRule ^([^/]+)/*$ $1/index [L,NC,QSA]
+	RewriteRule ^(?U)(.+)/(.+)/*$ index.php?controller=$1&action=$2 [L,NC,QSA]
+</IfModule>
