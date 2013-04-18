@@ -10,10 +10,9 @@ Requirements
 Setup
 -----
 
-1. Create the database using the `db.sql` file.
-2. Go to `system/config.php`.
-3. Change the `config` array according to your development environment.
-4. Save `config.php`.
+1. Go to `system/config.php`.
+2. Change the `config` array according to your development environment.
+3. Save `config.php`.
 
 Licence
 -------
