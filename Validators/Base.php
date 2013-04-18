@@ -11,7 +11,7 @@ namespace Validators {
          * Checks the string length of a property with a wanted <var>$length</var>.
          *
          * @param string $length   The wanted length of string.
-         * @param mixed  $property The value to check.
+         * @param mixed  $property The property to check.
          *
          * @return boolean True if <var>$property</var> length equals to <var>$length</var> or false otherwise.
          */
@@ -30,9 +30,18 @@ namespace Validators {
             return !is_null($property) && $property != '';
         }
 
+        /**
+         * Checks if the string length of a property is between <var>$min</var> and <var>$max</var>.
+         *
+         * @param string $min      The minimum length.
+         * @param string $max      The maximum length.
+         * @param mixed  $property The property to check.
+         *
+         * @return boolean True if <var>$property</var> length is between <var>$min</var> and <var>$max</var>.
+         */
         public static function lengthBetween($min, $max, $property) {
             $length = mb_strlen($property);
-            return $min <= $length && $length <= $max;
+            return intval($min) <= $length && $length <= intval($max);
         }
     }
 }
