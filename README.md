@@ -10,7 +10,7 @@ Requirements
 Setup
 -----
 
-1. Go to `system/config.php`.
+1. Go to `System/config.php`.
 2. Change the `config` array according to your development environment.
 3. Save `config.php`.
 
