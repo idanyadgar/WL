@@ -3,7 +3,7 @@
 use System\ErrorLog;
 
 try {
-    include dirname($_SERVER['DOCUMENT_ROOT'])."/System/init.php";
+    include dirname($_SERVER['DOCUMENT_ROOT']).'/System/init.php';
     $app        = app();
     $controller = 'Index';
     $action     = 'IndexAction';

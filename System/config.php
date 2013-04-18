@@ -9,5 +9,7 @@ $config['db']['username']    = 'db_username';
 $config['db']['password']    = 'db_password';
 $config['db']['dsn']         = "mysql:dbname={$config['db']['name']};host=localhost;charset=utf8";
 $config['default_validator'] = 'Base';
-$config['include']           = [];
+$config['include']           = [
+    $config['root_dir'].'/Sources/password_compat.php'
+];
 return $config;

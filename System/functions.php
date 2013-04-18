@@ -1,14 +1,12 @@
 <?php
 
-use System\App;
-
-include dirname($_SERVER['DOCUMENT_ROOT']).'/Sources/password_compat.php';
-
 /**
  * Returns the application object.
  *
  * @return App The application object.
  */
+use System\App;
+
 function app() {
     return App::get();
 }
