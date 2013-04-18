@@ -169,6 +169,8 @@ namespace System {
         }
 
         /**
+         * Renders a <var>$view</var> and returns its output.
+         *
          * @param string $view The name of the view.
          *
          * @return string The rendered view.
