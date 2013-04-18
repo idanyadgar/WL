@@ -1,12 +1,11 @@
 <?php
+use System\App;
 
 /**
  * Returns the application object.
  *
  * @return App The application object.
  */
-use System\App;
-
 function app() {
     return App::get();
 }
