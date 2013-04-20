@@ -6,19 +6,7 @@ namespace Validators {
      *
      * @package Validators
      */
-    class Base {
-        /**
-         * Checks the string length of a property with a wanted <var>$length</var>.
-         *
-         * @param string $length   The wanted length of string.
-         * @param mixed  $property The property to check.
-         *
-         * @return boolean True if <var>$property</var> length equals to <var>$length</var> or false otherwise.
-         */
-        public static function lengthIs($length, $property) {
-            return mb_strlen($property) == $length;
-        }
-
+    abstract class Base {
         /**
          * Checks if a property contains an actual value.
          *
@@ -26,20 +14,20 @@ namespace Validators {
          *
          * @return boolean True if <var>$property</var> contains an actual value or false otherwise.
          */
-        public static function required($property) {
+        public static function Required($property) {
             return !is_null($property) && $property != '';
         }
 
         /**
-         * Checks if the string length of a property is between <var>$min</var> and <var>$max</var>.
+         * Checks if the string Length of a property is between <var>$min</var> and <var>$max</var>.
          *
-         * @param string $min      The minimum length.
-         * @param string $max      The maximum length.
+         * @param string $min      The minimum Length.
+         * @param string $max      The maximum Length.
          * @param mixed  $property The property to check.
          *
-         * @return boolean True if <var>$property</var> length is between <var>$min</var> and <var>$max</var>.
+         * @return boolean True if <var>$property</var> Length is between <var>$min</var> and <var>$max</var>.
          */
-        public static function lengthBetween($min, $max, $property) {
+        public static function Length($min, $max, $property) {
             $length = mb_strlen($property);
             return intval($min) <= $length && $length <= intval($max);
         }

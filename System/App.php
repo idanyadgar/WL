@@ -105,11 +105,11 @@ namespace System {
          * @param array  $params     The parameters.
          *
          * @throws NotFoundException   When the controller does not exist or the action does not exist in the controller.
-         * @throws BadRequestException When at least one of the action's required parameters is missing.
+         * @throws BadRequestException When at least one of the action's Required parameters is missing.
          */
         public function run($controller, $action, array $params) {
             $this->init();
-            if (!controllerExists($controller) || !method_exists($controller = "\\Controllers\\$controller", $action)) {
+            if (!controller_exists($controller) || !method_exists($controller = "\\Controllers\\$controller", $action)) {
                 throw new NotFoundException();
             }
             $this->_controller = new $controller;

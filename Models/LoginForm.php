@@ -9,12 +9,12 @@ namespace Models {
      */
     class LoginForm extends Model {
         /**
-         * @validation-rule required()           {username field is required}
-         * @validation-rule lengthBetween(4, 20) {username must contain 4 to 20 characters}
+         * @validation-rule Required()           {username field is required}
+         * @validation-rule Length(4, 20) {username must contain 4 to 20 characters}
          */
         public $username;
         /**
-         * @validation-rule required() {password field is required}
+         * @validation-rule Required() {password field is Required}
          */
         public $password;
     }

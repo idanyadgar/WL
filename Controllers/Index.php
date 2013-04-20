@@ -14,9 +14,9 @@ namespace Controllers {
          * The Index action.<br />
          * URL: /Index/Index
          */
-        public function IndexAction(LoginForm $form, $do = null) {
+        public function IndexAction(LoginForm $form) {
             $this->viewBag->model = $form;
-            if ($do == 'login' && $form->isValid()) {
+            if (app()->request->method == 'post' && $form->isValid()) {
                 echo 'valid.';
             }
             else {

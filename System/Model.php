@@ -44,7 +44,7 @@ namespace System {
             $valid            = true;
             $defaultValidator = app()->config['default_validator'];
             foreach ($this->errors as $property => $v) {
-                $rules = getValidationRules(new ReflectionProperty($this, $property));
+                $rules = get_validation_rules(new ReflectionProperty($this, $property));
                 foreach ($rules as $rule) {
                     if (strpos($rule['method'], '::') === false) {
                         $rule['method'] = "$defaultValidator::{$rule['method']}";

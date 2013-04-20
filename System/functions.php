@@ -24,29 +24,13 @@ function e($string, $flags = ENT_QUOTES, $encoding = null) {
 }
 
 /**
- * Makes only the first characters of a string uppercase.<br />
- * <br />
- * Example:<br />
- * <code>
- *    echo ofuc("hElLo WOrLd"); // Hello world
- * </code>
- *
- * @param string $string the input string.
- *
- * @return string the string with only the first character uppercase.
- */
-function ofuc($string) {
-    return ucfirst(strtolower($string));
-}
-
-/**
  * Checks whether a controller exists.
  *
  * @param string $controller the name of the controller.
  *
  * @return boolean true if the controller exists or false otherwise.
  */
-function controllerExists($controller) {
+function controller_exists($controller) {
     return file_exists(app()->config['root_dir']."/Controllers/$controller.php");
 }
 
@@ -120,7 +104,7 @@ function accessible($class, $method, array $caller) {
  *
  * @return array The doc as array. An empty array is returned if the doc cannot be retrieved.
  */
-function getValidationRules(ReflectionProperty $property) {
+function get_validation_rules(ReflectionProperty $property) {
     $doc = $property->getDocComment();
     if (!$doc) {
         return [];
