@@ -14,7 +14,7 @@ namespace Models {
          */
         public $username;
         /**
-         * @validation-rule Required() {password field is Required}
+         * @validation-rule Required() {password field is required}
          */
         public $password;
     }
