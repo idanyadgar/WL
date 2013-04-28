@@ -1,7 +1,8 @@
 <?php
 namespace Controllers {
-    use Models\LoginForm;
+    use Models\RegisterForm;
     use System\Controller;
+    use System\View;
 
     /**
      * The Index controller.<br />
@@ -14,14 +15,15 @@ namespace Controllers {
          * The Index action.<br />
          * URL: /Index/Index
          */
-        public function IndexAction(LoginForm $form) {
-            $this->viewBag->model = $form;
+        public function IndexAction(RegisterForm $form) {
             if (app()->request->method == 'post' && $form->isValid()) {
-                echo 'valid.';
+                $view = new View('show');
             }
             else {
-                echo $this->render('form');
+                $view = new View('register');
             }
+            $view->model = $form;
+            echo $view->render();
         }
     }
 }

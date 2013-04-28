@@ -1,5 +1,7 @@
 <?php
 namespace System {
+    use DateTime;
+    use Exception;
     use ReflectionClass;
     use ReflectionMethod;
     use System\DB\DB;
@@ -129,7 +131,36 @@ namespace System {
                         $obj            = new $paramClassName;
                         foreach ($paramClass->getProperties() as $property) {
                             if (array_key_exists($property->getName(), $params)) {
-                                $obj->{$property->getName()} = $params[$property->getName()];
+                                $varType = get_property_var_type($property);
+                                switch ($varType) {
+                                    case 'DateTime':
+                                        try {
+                                            $obj->{$property->getName()} = new DateTime($params[$property->getName()]);
+                                            if (count(DateTime::getLastErrors()['warnings']) > 0 || trim($params[$property->getName()]) == '') {
+                                                throw new Exception();
+                                            }
+                                        }
+                                        catch (Exception $e) {
+                                            $obj->{$property->getName()} = $params[$property->getName()];
+                                        }
+                                        break;
+                                    case 'array':
+                                    case null:
+                                        $obj->{$property->getName()} = $params[$property->getName()];
+                                        break;
+                                    default:
+                                        if (mb_substr($varType, -2) == '[]') {
+                                            $varType                      = mb_substr($varType, 0, -2);
+                                            $params[$property->getName()] = is_array($params[$property->getName()]) ? $params[$property->getName()] : [$params[$property->getName()]];
+                                            $obj->{$property->getName()}  = array_map(function ($param) use ($varType) {
+                                                return $varType::parse($param);
+                                            }, $params[$property->getName()]);
+                                        }
+                                        else {
+                                            $obj->{$property->getName()} = $varType::parse($params[$property->getName()]);
+                                        }
+                                        break;
+                                }
                             }
                         }
                         $parameters[] = $obj;

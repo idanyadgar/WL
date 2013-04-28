@@ -15,7 +15,6 @@ namespace System {
      * @property string        $description The description &lt;meta&gt; tag.
      * @property ArrayObject   $scripts     Javascript files to include to the page.
      * @property ArrayObject   $styles      Css files to include to the page.
-     * @property-read stdClass $viewBag     The variables which are available in the view (protected).
      */
     abstract class Controller {
         use Properties;
@@ -44,16 +43,11 @@ namespace System {
          * @var ArrayObject Css files to include to the page.
          */
         private $_styles;
-        /**
-         * @var stdClass The variables which are available in the view.
-         */
-        private $_viewBag;
 
         public function __construct() {
             $this->_keywords = new ArrayObject();
             $this->_scripts  = new ArrayObject();
             $this->_styles   = new ArrayObject();
-            $this->_viewBag  = new stdClass();
         }
 
         /**
@@ -138,15 +132,6 @@ namespace System {
         }
 
         /**
-         * Returns the variables which are available in the view.
-         *
-         * @return stdClass The variables which are available in the view.
-         */
-        protected function getViewBag() {
-            return $this->_viewBag;
-        }
-
-        /**
          * Adds a javascript file to include to the page.
          *
          * @param string $script The url of the script.
@@ -166,22 +151,6 @@ namespace System {
             if (!in_array($style, (array)$this->styles, true)) {
                 $this->styles[] = $style;
             }
-        }
-
-        /**
-         * Renders a <var>$view</var> and returns its output.
-         *
-         * @param string $view The name of the view.
-         *
-         * @return string The rendered view.
-         */
-        public final function render($view) {
-            extract((array)$this->viewBag, EXTR_OVERWRITE);
-            ob_start();
-            include app()->config['root_dir'].'/Views/'.func_get_arg(0).'.php';
-            $result = ob_get_contents();
-            ob_end_clean();
-            return $result;
         }
     }
 }

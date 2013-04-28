@@ -50,7 +50,12 @@ namespace System {
                         $rule['method'] = "$defaultValidator::{$rule['method']}";
                     }
                     $rule['method']         = 'Validators\\'.$rule['method'];
-                    $rule['methodParams'][] = $this->{$property};
+                    foreach ($rule['methodParams'] as &$param) {
+                        if (mb_substr($param, 0, 1) == '&') {
+                            $param = $this->{mb_substr($param, 1)};
+                        }
+                    }
+                    array_unshift($rule['methodParams'], $this->{$property});
                     if (!call_user_func_array($rule['method'], $rule['methodParams'])) {
                         $valid                    = false;
                         $this->_errors[$property] = $rule['errorMessage'];

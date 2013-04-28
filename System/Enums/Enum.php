@@ -51,7 +51,7 @@ namespace System\Enums {
          *
          * @return Enum|boolean The option or false if it does not exist.
          */
-        public static function getFromString($string) {
+        public static function parse($string) {
             $enum      = get_called_class();
             $constants = (new ReflectionClass($enum))->getConstants();
             $option    = array_search(strtolower($string), array_map('strtolower', $constants), true);

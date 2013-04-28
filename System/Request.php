@@ -68,7 +68,7 @@ namespace System {
                 $this->ip          = $_SERVER['REMOTE_ADDR'];
                 $this->userAgent   = $_SERVER['HTTP_USER_AGENT'];
                 $this->protocol    = $_SERVER['SERVER_PROTOCOL'];
-                $this->method      = RequestMethod::getFromString($_SERVER['REQUEST_METHOD']);
+                $this->method      = RequestMethod::parse($_SERVER['REQUEST_METHOD']);
                 $this->queryString = $_SERVER['QUERY_STRING'];
                 $this->uri         = $_SERVER['REQUEST_URI'];
                 $this->time        = new DateTime('@'.$_SERVER['REQUEST_TIME']);

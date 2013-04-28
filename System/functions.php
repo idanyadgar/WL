@@ -1,11 +1,12 @@
 <?php
-use System\App;
 
 /**
  * Returns the application object.
  *
  * @return App The application object.
  */
+use System\App;
+
 function app() {
     return App::get();
 }
@@ -56,6 +57,21 @@ function in_array_multi(array $needles, array $haystack) {
 }
 
 /**
+ * An array_search() function which searches for multiple values.
+ *
+ * @param array    $needles  The searched values.
+ * @param array    $haystack The array to search in.
+ * @param boolean  $strict   array_search() <var>$strict</var> parameter.
+ * 
+ * @return array An array whose each <i>element</i> is the key in <var>$haystack</var> whose value equals to the corresponding <i>element</i> in <var>$needles</var>.
+ */
+function array_search_multi(array $needles, array $haystack, $strict = false) {
+    return array_map(function($needle) use($haystack, $strict) {
+        return array_search($needle, $haystack, $strict);
+    }, $needles);
+}
+
+/**
  * Checks the type of a value.
  *
  * @param mixed $value The value to checks.
@@ -98,11 +114,11 @@ function accessible($class, $method, array $caller) {
 }
 
 /**
- * Retrieves the doc and parses it into an array.
+ * Retrieves the validation rules and parses it into an array.
  *
- * @param ReflectionProperty $property The reflection object.
+ * @param ReflectionProperty $property The property.
  *
- * @return array The doc as array. An empty array is returned if the doc cannot be retrieved.
+ * @return array The rules as array. An empty array is returned if the rules cannot be retrieved.
  */
 function get_validation_rules(ReflectionProperty $property) {
     $doc = $property->getDocComment();
@@ -124,4 +140,92 @@ function get_validation_rules(ReflectionProperty $property) {
         ];
     }
     return $rules;
+}
+
+/**
+ * Retrieves the attributes of a given property.
+ *
+ * @param ReflectionProperty $property The property.
+ *
+ * @return array The attributes of the property as an array.
+ */
+function get_property_attributes(ReflectionProperty $property) {
+    $doc = $property->getDocComment();
+    if (!$doc) {
+        return [];
+    }
+    $doc = str_replace(
+        ["\r\n", "\r"],
+        ["\n", "\n"],
+        trim(mb_substr($doc, 3, -2))
+    );
+    preg_match_all('/^\s*\*\s*@attribute\s+([a-z]+)\s*=\s*(.+)\s*$/imU', $doc, $matches, PREG_SET_ORDER);
+    $attrs = [];
+    foreach ($matches as $match) {
+        $attrs[$match[1]] = $match[2];
+    }
+    return $attrs;
+}
+
+/**
+ * Retrieves the display name of a given property.
+ *
+ * @param ReflectionProperty $property The property.
+ *
+ * @return string The display name of the property or null if there is not one.
+ */
+function get_property_display_name(ReflectionProperty $property) {
+    $doc = $property->getDocComment();
+    if (!$doc) {
+        return null;
+    }
+    $doc = str_replace(
+        ["\r\n", "\r"],
+        ["\n", "\n"],
+        trim(mb_substr($doc, 3, -2))
+    );
+    preg_match_all('/^\s*\*\s*@display\-name\s+\{(.+)\}\s*$/imU', $doc, $matches, PREG_SET_ORDER);
+    return array_key_exists(0, $matches) && array_key_exists(1, $matches[0]) ? $matches[0][1] : null;
+}
+
+/**
+ * Retrieves the documented type of a given property.
+ *
+ * @param ReflectionProperty $property The property.
+ *
+ * @return string The documented type of the property or null if there is not one.
+ */
+function get_property_var_type(ReflectionProperty $property) {
+    $doc = $property->getDocComment();
+    if (!$doc) {
+        return null;
+    }
+    $doc = str_replace(
+        ["\r\n", "\r"],
+        ["\n", "\n"],
+        trim(mb_substr($doc, 3, -2))
+    );
+    preg_match_all('/^\s*\*\s*@var\s+([^\s]+).*$/im', $doc, $matches, PREG_SET_ORDER);
+    return array_key_exists(0, $matches) && array_key_exists(1, $matches[0]) ? $matches[0][1] : null;
+}
+
+/**
+ * Retrieves the display text of a given property.
+ *
+ * @param ReflectionProperty $property The property.
+ *
+ * @return string The display text of the property or null if there is not one.
+ */
+function get_property_display_text(ReflectionProperty $property) {
+    $doc = $property->getDocComment();
+    if (!$doc) {
+        return null;
+    }
+    $doc = str_replace(
+        ["\r\n", "\r"],
+        ["\n", "\n"],
+        trim(mb_substr($doc, 3, -2))
+    );
+    preg_match_all('/^\s*\*\s*@display\-text\s+\{(.+)\}\s*$/imU', $doc, $matches, PREG_SET_ORDER);
+    return array_key_exists(0, $matches) && array_key_exists(1, $matches[0]) ? $matches[0][1] : null;
 }
