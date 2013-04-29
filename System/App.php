@@ -131,7 +131,8 @@ namespace System {
                         $obj            = new $paramClassName;
                         foreach ($paramClass->getProperties() as $property) {
                             if (array_key_exists($property->getName(), $params)) {
-                                $varType = get_property_var_type($property);
+                                $varType = Annotation::ofProperty($paramClassName, $property->getName());
+                                $varType = array_key_exists('VarType', $varType) ? $varType['VarType'][0]->value : null;
                                 switch ($varType) {
                                     case 'DateTime':
                                         try {

@@ -1,6 +1,5 @@
 <?php
 namespace Models {
-    use DateTime;
     use System\Model;
 
     /**
@@ -10,47 +9,47 @@ namespace Models {
      */
     class RegisterForm extends Model {
         /**
-         * @validation-rule Required()    {Username field is required}
-         * @validation-rule Length(4, 20) {Username must contain 4 to 20 characters}
-         * @display-name    {Username}
+         * @Validator   Required(false, "{0} must be selected")
+         * @Validator   Length(4, 20)
+         * @DisplayName Username
          */
         public $username;
         /**
-         * @validation-rule Required()   {Password field is required}
-         * @validation-rule MinLength(6) {Password must contain at least 6 characters}
-         * @display-name    {Password}
-         * @attribute       type=password
+         * @Validator   Required()
+         * @Validator   MinLength(6)
+         * @DisplayName Password
+         * @Attribute   type=password
          */
         public $password;
         /**
-         * @validation-rule Compare(&password) {Password and Password confirmation do not match}
-         * @display-name    {Confirm Password}
-         * @attribute       type=password
+         * @Validator    Compare("password")
+         * @DisplayName  Confirm Password
+         * @Attribute    type=password
          */
         public $rePassword;
         /**
-         * @var DateTime
-         * @validation-rule Required() {Birthday field is required}
-         * @validation-rule Date()     {Invalid date}
-         * @display-name    {Birthday}
-         * @attribute       type=date
+         * @VarType     DateTime
+         * @Validator   Required()
+         * @Validator   Date()
+         * @DisplayName Birthday
+         * @Attribute   type=date
          */
         public $birthday;
         /**
-         * @var \System\Enums\Gender
-         * @validation-rule Required() {Gender is required}
-         * @display-name    {Gender}
+         * @VarType     \System\Enums\Gender
+         * @Validator   Required()
+         * @DisplayName Gender
          */
         public $gender;
         /**
-         * @var \System\Enums\Language[]
-         * @validation-rule Required() {At least one language is required}
-         * @display-name    {Languages}
+         * @VarType     \System\Enums\Language[]
+         * @Validator   Required()
+         * @DisplayName Languages
          */
         public $languages;
         /**
-         * @validation-rule Required(false) {You must agree to the <a href="/Terms">terms of use</a>}
-         * @display-text    {I agree to the <a href="/Terms">terms of use</a>}
+         * @Validator   Required(true, 'You must agree to the <a href="/Terms">terms of use</a>')
+         * @DisplayText I agree to the <a href="/Terms">terms of use</a>
          */
         public $agree;
     }

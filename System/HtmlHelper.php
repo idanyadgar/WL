@@ -1,8 +1,7 @@
 <?php
 namespace System {
-    use ReflectionClass;
-    use ReflectionProperty;
     use DateTime;
+    use ReflectionClass;
 
     /**
      * Helps in rendering html controls in a view.
@@ -63,7 +62,7 @@ namespace System {
             if (!is_array($propVal)) {
                 $propVal = [$propVal];
             }
-            return implode(', ', array_map(function($prop) {
+            return implode(', ', array_map(function ($prop) {
                 if ($prop instanceof DateTime) {
                     $prop = $prop->format('Y-m-d');
                 }
@@ -79,8 +78,8 @@ namespace System {
          * @return string The display name of the property.
          */
         public function displayName($property) {
-            $text = get_property_display_name(new ReflectionProperty($this->_view->model, $property));
-            $text = !is_null($text) ? $text : $property;
+            $text = Annotation::ofProperty(get_class($this->_view->model), $property);
+            $text = array_key_exists('DisplayName', $text) ? $text['DisplayName'][0]->value : $property;
             return e($text);
         }
 
@@ -123,8 +122,8 @@ namespace System {
          * @return string The generated label tag.
          */
         public function labelFor($property, array $attributes = []) {
-            $text = get_property_display_name(new ReflectionProperty($this->_view->model, $property));
-            $text = !is_null($text) ? $text : $property;
+            $text = Annotation::ofProperty(get_class($this->_view->model), $property);
+            $text = array_key_exists('DisplayName', $text) ? $text['DisplayName'][0]->value : $property;
             return $this->label("$text:", $property, $attributes);
         }
 
@@ -155,9 +154,14 @@ namespace System {
          * @return string The generated text box.
          */
         public function textBoxFor($property, array $attributes = []) {
-            $propAttrs = get_property_attributes(new ReflectionProperty($this->_view->model, $property));
-            $type      = array_key_exists('type', $propAttrs) ? $propAttrs['type'] : 'text';
-            return $this->textBox($type, $this->_view->model->{$property}, $attributes + $propAttrs + ['name' => $property, 'id' => $property]);
+            $propAttrs    = Annotation::ofProperty(get_class($this->_view->model), $property);
+            $propAttrs    = array_key_exists('Attribute', $propAttrs) ? $propAttrs['Attribute'] : [];
+            $propAttrsArr = [];
+            foreach ($propAttrs as $attr) {
+                $propAttrsArr[$attr->attribute] = $attr->attrval;
+            }
+            $type = array_key_exists('type', $propAttrsArr) ? $propAttrsArr['type'] : 'text';
+            return $this->textBox($type, htmlspecialchars_decode($this->display($property, ENT_QUOTES)), $attributes + $propAttrsArr + ['name' => $property, 'id' => $property]);
         }
 
         /**
@@ -181,7 +185,7 @@ namespace System {
          * @return string The generated hidden box.
          */
         public function hiddenFor($property, array $attributes = []) {
-            return $this->hidden($this->_view->model->{$property}, $attributes);
+            return $this->hidden(htmlspecialchars_decode($this->display($property, ENT_QUOTES)), $attributes);
         }
 
         /**
@@ -210,8 +214,13 @@ namespace System {
          * @return string The generated text area.
          */
         public function textAreaFor($property, array $attributes = []) {
-            $propAttrs = get_property_attributes(new ReflectionProperty($this->_view->model, $property));
-            return $this->textArea($this->_view->model->{$property}, $attributes + $propAttrs + ['name' => $property, 'id' => $property]);
+            $propAttrs    = Annotation::ofProperty(get_class($this->_view->model), $property);
+            $propAttrs    = array_key_exists('Attribute', $propAttrs) ? $propAttrs['Attribute'] : [];
+            $propAttrsArr = [];
+            foreach ($propAttrs as $attr) {
+                $propAttrsArr[$attr->attribute] = $attr->attrval;
+            }
+            return $this->textArea(htmlspecialchars_decode($this->display($property, ENT_QUOTES)), $attributes + $propAttrsArr + ['name' => $property, 'id' => $property]);
         }
 
         /**
@@ -264,19 +273,23 @@ namespace System {
          * @param string $separator  The separator between the radio buttons.
          * @param array  $attributes Additional attributes to each of the radio buttons.
          *
-         * @return string The generated radio buttons group. 
+         * @return string The generated radio buttons group.
          */
         public function radioGroupFor($property, $separator = "\n", array $attributes = []) {
-            $ref       = new ReflectionProperty($this->_view->model, $property);
-            $propType  = get_property_var_type($ref);
-            $propAttrs = get_property_attributes($ref);
-            if (is_subclass_of($propType, 'System\\Enums\\Enum')) {
-                $values = (new ReflectionClass($propType))->getConstants();
-                $checked = array_search($this->_view->model->{$property}, array_values($values));
-                return $this->radioGroup($property, $values, $checked === false ? -1 : $checked, $separator, $attributes + $propAttrs);
+            $annotations  = Annotation::ofProperty(get_class($this->_view->model), $property);
+            $propType     = array_key_exists('VarType', $annotations) ? $annotations['VarType'][0]->value : null;
+            $propAttrs    = array_key_exists('Attribute', $annotations) ? $annotations['Attribute'][0]->value : [];
+            $propAttrsArr = [];
+            foreach ($propAttrs as $attr) {
+                $propAttrsArr[$attr->attribute] = $attr->attrval;
             }
-            $text = get_property_display_text($ref);
-            return $this->radio($this->_view->model->{$property}, is_null($text) ? '' : $text, $attributes + $propAttrs + ['name' => $property]);
+            if (is_subclass_of($propType, 'System\\Enums\\Enum')) {
+                $values  = (new ReflectionClass($propType))->getConstants();
+                $checked = array_search($this->_view->model->{$property}, array_values($values));
+                return $this->radioGroup($property, $values, $checked === false ? -1 : $checked, $separator, $attributes + $propAttrsArr);
+            }
+            $text = array_key_exists('DisplayText', $annotations) ? $annotations['DisplayText'][0]->value : '';
+            return $this->radio($this->_view->model->{$property}, $text, $attributes + $propAttrsArr + ['name' => $property]);
         }
 
         /**
@@ -332,16 +345,20 @@ namespace System {
          * @return string The generated checkboxes group.
          */
         public function checkBoxGroupFor($property, $separator = "\n", array $attributes = []) {
-            $ref       = new ReflectionProperty($this->_view->model, $property);
-            $propType  = get_property_var_type($ref);
-            $propAttrs = get_property_attributes($ref);
+            $annotations  = Annotation::ofProperty(get_class($this->_view->model), $property);
+            $propType     = array_key_exists('VarType', $annotations) ? $annotations['VarType'][0]->value : null;
+            $propAttrs    = array_key_exists('Attribute', $annotations) ? $annotations['Attribute'][0]->value : [];
+            $propAttrsArr = [];
+            foreach ($propAttrs as $attr) {
+                $propAttrsArr[$attr->attribute] = $attr->attrval;
+            }
             if (mb_substr($propType, -2) == '[]' && is_subclass_of($propType = mb_substr($propType, 0, -2), 'System\\Enums\\Enum')) {
                 $values = (new ReflectionClass($propType))->getConstants();
                 return $this->checkBoxGroup($property, $values, array_search_multi((array)$this->_view->model->{$property}, array_values($values)), $separator, $attributes + $propAttrs);
             }
-            $text = get_property_display_text($ref);
+            $text      = array_key_exists('DisplayText', $annotations) ? $annotations['DisplayText'][0]->value : '';
             $propAttrs = !is_null($this->_view->model->{$property}) ? $propAttrs + ['checked' => 'checked'] : $propAttrs;
-            return $this->checkBox($this->_view->model->{$property}, is_null($text) ? '' : $text, $attributes + $propAttrs + ['name' => $property]);
+            return $this->checkBox($this->_view->model->{$property}, $text, $attributes + $propAttrs + ['name' => $property]);
         }
     }
 }

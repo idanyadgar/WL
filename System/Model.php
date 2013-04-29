@@ -1,6 +1,6 @@
 <?php
 namespace System {
-    use ReflectionProperty;
+    use System\Annotations\Validator;
     use System\Traits\Properties;
 
     /**
@@ -31,39 +31,8 @@ namespace System {
          *
          * @return string[] The <var>$errors</var> property.
          */
-        public function getErrors() {
+        public final function getErrors() {
             return $this->_errors;
-        }
-
-        /**
-         * Walks over the validation rules of the model and checks each of them with the values of the model.
-         *
-         * @return boolean true for valid or false otherwise.
-         */
-        public final function isValid() {
-            $valid            = true;
-            $defaultValidator = app()->config['default_validator'];
-            foreach ($this->errors as $property => $v) {
-                $rules = get_validation_rules(new ReflectionProperty($this, $property));
-                foreach ($rules as $rule) {
-                    if (strpos($rule['method'], '::') === false) {
-                        $rule['method'] = "$defaultValidator::{$rule['method']}";
-                    }
-                    $rule['method']         = 'Validators\\'.$rule['method'];
-                    foreach ($rule['methodParams'] as &$param) {
-                        if (mb_substr($param, 0, 1) == '&') {
-                            $param = $this->{mb_substr($param, 1)};
-                        }
-                    }
-                    array_unshift($rule['methodParams'], $this->{$property});
-                    if (!call_user_func_array($rule['method'], $rule['methodParams'])) {
-                        $valid                    = false;
-                        $this->_errors[$property] = $rule['errorMessage'];
-                        break;
-                    }
-                }
-            }
-            return $valid;
         }
 
         /**
@@ -75,6 +44,37 @@ namespace System {
          */
         public final function getError($property) {
             return array_key_exists($property, $this->errors) ? $this->errors[$property] : '';
+        }
+
+        /**
+         * Sets an error to a given property.
+         *
+         * @param string $property The name of the property.
+         * @param        $error    $error    The error.
+         */
+        public final function setError($property, $error) {
+            $this->_errors[$property] = $error;
+        }
+
+        /**
+         * Walks over the validation rules of the model and checks each of them with the values of the model.
+         *
+         * @return boolean true for valid or false otherwise.
+         */
+        public final function isValid() {
+            $valid = true;
+            foreach ($this->errors as $property => $v) {
+                $validators = Annotation::ofProperty(get_class($this), $property);
+                $validators = array_key_exists('Validator', $validators) ? $validators['Validator'] : [];
+                foreach ($validators as $validator) {
+                    if (!$validator->validate($this)) {
+                        $valid = false;
+                        $this->setError($property, $validator->getErrorMessage());
+                        break;
+                    }
+                }
+            }
+            return $valid;
         }
     }
 }
