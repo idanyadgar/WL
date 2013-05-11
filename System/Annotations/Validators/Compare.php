@@ -1,5 +1,6 @@
 <?php
 namespace System\Annotations\Validators {
+    use System\Annotation;
     use System\Annotations\Validator;
 
     /**
@@ -19,10 +20,12 @@ namespace System\Annotations\Validators {
          */
         public function __construct($property, $errorMessage = '{0} and {1} must be identical') {
             parent::__construct();
-            $this->_errorMessage = $errorMessage;
-            $this->_property = $property;
+            $annotation          = Annotation::ofProperty($this->_className, $property);
+            $displayName         = array_key_exists('DisplayName', $annotation) ? $annotation['DisplayName'][0]->value : $property;
+            $this->_errorMessage = preg_replace('/\{1\}/', $displayName, $errorMessage);
+            $this->_property     = $property;
         }
-        
+
         public function validate($object) {
             return $object->{$this->property} === $object->{$this->_property};
         }

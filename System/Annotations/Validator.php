@@ -26,7 +26,7 @@ namespace System\Annotations {
         /**
          * @var string The name of the class in which the property which has the validator is.
          */
-        private $_className;
+        protected $_className;
         /**
          * @var array
          */
@@ -56,7 +56,11 @@ namespace System\Annotations {
          * @return string The error message.
          */
         public function getErrorMessage() {
-            return $this->_errorMessage = $this->parseErrorMessage($this->_errorMessage);
+            static $parsed = false;
+            if (!$parsed) {
+                $this->_errorMessage = $this->parseErrorMessage($this->_errorMessage);
+            }
+            return $this->_errorMessage;
         }
 
         /**
