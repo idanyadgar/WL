@@ -111,7 +111,7 @@ namespace System\Annotations {
                     return $lower == 'true';
                 }
                 if (is_numeric($param)) {
-                    return strpos($param, '.') == -1 ? intval($param) : floatval($param);
+                    return strpos($param, '.') === false ? intval($param) : floatval($param);
                 }
                 if (mb_substr($param, 0, 1) == mb_substr($param, -1) && in_array(mb_substr($param, 0, 1), ['"', '\''])) {
                     return mb_substr($param, 1, -1);
